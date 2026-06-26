@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ms. Lê Hằng English - Dark Aurora Glass</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif;
+            background-color: #0b1120;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- HỆ THỐNG CỰC QUANG NEON (DARK MODE) --- */
+        .aurora-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            animation: rainbowHueShift 18s linear infinite;
+        }
+        
+        @keyframes rainbowHueShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .aurora-blob {
+            position: absolute;
+            width: 1200px;
+            height: 1200px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.7;
+            mix-blend-mode: screen; 
+        }
+
+        .aurora-1 {
+            background: radial-gradient(circle, #ff2e93 0%, transparent 60%);
+            top: -30%; left: -20%;
+            animation: auroraMoveOne 18s infinite alternate ease-in-out;
+        }
+
+        .aurora-2 {
+            background: radial-gradient(circle, #00f0ff 0%, transparent 60%);
+            bottom: -30%; right: -20%;
+            animation: auroraMoveTwo 22s infinite alternate ease-in-out;
+        }
+
+        .aurora-3 {
+            background: radial-gradient(circle, #7000ff 0%, transparent 60%);
+            top: 30%; left: 15%;
+            animation: auroraMoveThree 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes auroraMoveOne {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(150px, 100px) scale(1.1) rotate(45deg); }
+            100% { transform: translate(-80px, 180px) scale(0.95) rotate(-30deg); }
+        }
+
+        @keyframes auroraMoveTwo {
+            0% { transform: translate(0, 0) scale(1.05) rotate(0deg); }
+            50% { transform: translate(-150px, -120px) scale(0.9) rotate(-60deg); }
+            100% { transform: translate(100px, 80px) scale(1.15) rotate(30deg); }
+        }
+
+        @keyframes auroraMoveThree {
+            0% { transform: translate(0, 0) scale(0.95) rotate(0deg); }
+            50% { transform: translate(-100px, 150px) scale(1.1) rotate(-45deg); }
+            100% { transform: translate(120px, -100px) scale(1) rotate(60deg); }
+        }
+
+        .font-bubble { font-family: 'Fredoka', sans-serif; }
+        .font-poster { font-family: 'Oswald', sans-serif; }
+
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 5;
+        }
+
+        /* --- DARK GLASSMORPHISM & SOFT UI --- */
+        .premium-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .soft-nav {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+
+        .soft-reminder {
+            background: rgba(30, 27, 75, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 28px;
+        }
+
+        .option-card {
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease-in-out;
+            border-radius: 20px;
+        }
+
+        @keyframes owlDance {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+            100% { transform: translateY(0) rotate(-2deg); }
+        }
+        @keyframes owlIdle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        .owl-dancing { animation: owlDance 0.35s infinite alternate; }
+        .owl-idle { animation: owlIdle 2.5s infinite ease-in-out; }
+    </style>
+</head>
+<body class="text-slate-200 antialiased pb-28 relative tracking-wide">
+
+    <div class="aurora-container">
+        <div class="aurora-blob aurora-1"></div>
+        <div class="aurora-blob aurora-2"></div>
+        <div class="aurora-blob aurora-3"></div>
+    </div>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <header class="max-w-4xl w-full mx-auto pt-8 px-4 flex flex-col items-center relative z-10">
+        <div class="font-poster flex items-center gap-2 px-8 py-3 rounded-full bg-slate-900/60 text-white font-medium text-xs md:text-sm tracking-wider uppercase shadow-2xl backdrop-blur-md border border-white/10">
+            <span>✨ LỚP HỌC TIẾNG ANH CHẤT LƯỢNG CAO - MS. LÊ HẰNG ENGLISH ✨</span>
+        </div>
+    </header>
+
+    <section class="max-w-4xl w-full mx-auto px-4 mt-6 relative z-10">
+        <div class="soft-reminder p-6 text-center text-indigo-100 shadow-xl">
+            <span class="font-bubble font-semibold text-lg md:text-xl block mb-2 text-white drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">⚠️ LỜI NHẮC TỪ CÔ LÊ HẰNG ⚠️</span>
+            <p class="font-poster text-sm md:text-base tracking-wide text-indigo-200/90 leading-relaxed">
+                Bài tập Unit mới khá thử thách đấy! Hãy nhớ đọc thầm từ đó lên để kiểm tra vị trí trọng âm (Stress) và âm tiết trước khi chọn đáp án nhé!
+            </p>
+        </div>
+    </section>
+
+    <nav class="max-w-4xl w-full mx-auto px-4 mt-6 relative z-10">
+        <div class="font-poster soft-nav p-2 grid grid-cols-2 gap-3 shadow-lg">
+            <button onclick="changeSectionTab('ex1')" id="tab-ex1" class="py-3 text-xs md:text-sm font-medium text-center option-card active:scale-[0.97] bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)] border border-indigo-400/50">
+                🎯 EXERCISE 1 (PRONUNCIATION)
+            </button>
+            <button onclick="changeSectionTab('ex2')" id="tab-ex2" class="py-3 text-xs md:text-sm font-medium text-center option-card active:scale-[0.97] text-slate-300 hover:bg-white/10">
+                ⚡ EXERCISE 2 (WORD STRESS)
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl w-full mx-auto px-4 mt-6 relative z-10">
+        <div class="premium-card p-6 md:p-10">
+            <div class="mb-6 flex items-start gap-4 bg-slate-800/40 p-4 rounded-2xl border border-white/5 shadow-sm">
+                <span id="header-icon" class="text-2xl p-2.5 bg-slate-900 rounded-xl text-indigo-400 shadow-inner border border-white/5 shrink-0 flex items-center justify-center">🗣️</span>
+                <h2 id="exercise-main-title" class="font-bubble text-white font-medium text-sm md:text-base leading-relaxed pt-1">
+                    Exercise 1: Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation.
+                </h2>
+            </div>
+            
+            <div class="h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8"></div>
+
+            <div id="quiz-feed-wrapper" class="space-y-8">
+                <!-- Data goes here -->
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed bottom-20 right-4 md:right-8 z-40 flex flex-col items-center pointer-events-none select-none">
+        <div id="owl-speech-bubble" class="font-bubble bg-slate-800/95 backdrop-blur-md border border-slate-600 text-white text-xs font-medium px-4 py-2.5 rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.5)] mb-3 max-w-[160px] text-center opacity-95 transition-all duration-300">
+            Cố lên nha! Bài Tiếng Anh 9 siêu hay đó! 🚀
+        </div>
+        <div id="owl-mascot" class="owl-idle text-5xl md:text-6xl pointer-events-auto cursor-pointer filter drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" onclick="pokeMascot()">
+            🦉
+        </div>
+    </div>
+
+    <div class="font-poster fixed bottom-0 left-0 right-0 bg-slate-900/80 backdrop-blur-2xl border-t border-slate-700 py-3 px-4 flex justify-between items-center shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-50">
+        <div class="text-slate-300 font-medium text-xs md:text-sm flex items-center gap-2 bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-700 shadow-inner">
+            🥇 <span class="text-slate-400">ĐIỂM CỦA CON:</span> <span id="footer-live-score" class="text-2xl font-bold text-amber-400 ml-1 drop-shadow-md">0</span>
+        </div>
+        <button onclick="alertFinishMessage()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 active:scale-95 text-white font-medium px-6 py-2.5 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all text-xs md:text-sm uppercase tracking-wider border border-purple-400/50">
+            Nộp Bài 🚀
+        </button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class StarParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 8 + 4;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * -6 - 2;
+                this.gravity = 0.25;
+                this.color = `hsl(${Math.random() * 360}, 90%, 75%)`;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.015;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.translate(this.x, this.y);
+                ctx.moveTo(0, -this.size);
+                for (let i = 0; i < 5; i++) {
+                    ctx.rotate(Math.PI / 5);
+                    ctx.lineTo(0, -this.size * 0.4);
+                    ctx.rotate(Math.PI / 5);
+                    ctx.lineTo(0, -this.size);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function spawnConfetti(x, y) {
+            for (let i = 0; i < 25; i++) {
+                particlesArray.push(new StarParticle(x, y));
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particlesArray.length - 1; i >= 0; i--) {
+                particlesArray[i].update();
+                if (particlesArray[i].alpha <= 0) {
+                    particlesArray.splice(i, 1);
+                } else {
+                    particlesArray[i].draw();
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playToneFeedback(isCorrect) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            if (isCorrect) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); 
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(240, audioCtx.currentTime); 
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            }
+        }
+
+        const exerciseData = {
+            ex1: [
+                { id: 1, label: "1", text: "A. p<u>o</u>ttery | B. l<u>o</u>cal | C. c<u>o</u>ntrol | D. f<u>o</u>ld", options: { A: "pottery", B: "local", C: "control", D: "fold" }, answer: "A", exp: "👉 <strong class='text-white'>pottery</strong> chữ o được phát âm là <strong class='text-amber-300'>/ɒ/</strong>.<br>👉 Các từ còn lại phát âm là <strong class='text-amber-300'>/əʊ/</strong>." },
+                { id: 2, label: "2", text: "A. r<u>e</u>gulator | B. p<u>e</u>rsonal | C. r<u>e</u>feree | D. d<u>e</u>tective", options: { A: "regulator", B: "personal", C: "referee", D: "detective" }, answer: "B", exp: "👉 <strong class='text-white'>personal</strong> chữ e phát âm là <strong class='text-amber-300'>/ɜː/</strong>.<br>👉 Các từ còn lại có nguyên âm e phát âm là <strong class='text-amber-300'>/e/</strong> hoặc <strong class='text-amber-300'>/ɪ/</strong>." },
+                { id: 3, label: "3", text: "A. s<u>u</u>burb | B. c<u>u</u>ltural | C. dr<u>u</u>m | D. m<u>u</u>seum", options: { A: "suburb", B: "cultural", C: "drum", D: "museum" }, answer: "D", exp: "👉 <strong class='text-white'>museum</strong> chữ u phát âm là <strong class='text-amber-300'>/juː/</strong>.<br>👉 Các từ còn lại phát âm là <strong class='text-amber-300'>/ʌ/</strong>." },
+                { id: 4, label: "4", text: "A. tr<u>a</u>ditional | B. gr<u>a</u>duation | C. h<u>a</u>ndicraft | D. gr<u>a</u>ndparent", options: { A: "traditional", B: "graduation", C: "handicraft", D: "grandparent" }, answer: "A", exp: "👉 <strong class='text-white'>traditional</strong> chữ a đầu tiên phát âm là <strong class='text-amber-300'>/ə/</strong>.<br>👉 Các từ còn lại phát âm là âm bẹt <strong class='text-amber-300'>/æ/</strong>." },
+                { id: 5, label: "5", text: "A. c<u>a</u>ndidate | B. neg<u>a</u>tive | C. ch<u>a</u>racter | D. c<u>a</u>mera", options: { A: "candidate", B: "negative", C: "character", D: "camera" }, answer: "B", exp: "👉 <strong class='text-white'>negative</strong> chữ a ở giữa phát âm là <strong class='text-amber-300'>/ə/</strong>.<br>👉 Các từ còn lại phát âm là <strong class='text-amber-300'>/æ/</strong>." },
+                { id: 6, label: "6", text: "A. environm<u>e</u>nt | B. environm<u>e</u>ntal | C. entertainm<u>e</u>nt | D. docum<u>e</u>nt", options: { A: "environment", B: "environmental", C: "entertainment", D: "document" }, answer: "B", exp: "👉 <strong class='text-white'>environmental</strong> chữ e trong âm tiết 'men' phát âm là <strong class='text-amber-300'>/e/</strong> (/ˌen.vaɪ.rənˈmen.təl/).<br>👉 Các từ còn lại phát âm là <strong class='text-amber-300'>/ə/</strong>." },
+                { id: 7, label: "7", text: "A. <u>a</u>rtisan | B. <u>a</u>ttraction | C. c<u>a</u>st | D. cr<u>a</u>ft", options: { A: "artisan", B: "attraction", C: "cast", D: "craft" }, answer: "B", exp: "👉 <strong class='text-white'>attraction</strong> chữ a đầu phát âm là <strong class='text-amber-300'>/ə/</strong>.<br>👉 Các từ còn lại phát âm là <strong class='text-amber-300'>/ɑː/</strong>." },
+                { id: 8, label: "8", text: "A. l<u>a</u>yer | B. occ<u>a</u>sion | C. <u>a</u>rtisan | D. pl<u>a</u>ce", options: { A: "layer", B: "occasion", C: "artisan", D: "place" }, answer: "C", exp: "👉 <strong class='text-white'>artisan</strong> chữ a đầu phát âm là <strong class='text-amber-300'>/ɑː/</strong>.<br>👉 Các từ còn lại phát âm là âm đôi <strong class='text-amber-300'>/eɪ/</strong>." },
+                { id: 9, label: "9", text: "A. <u>e</u>ndangered | B. g<u>e</u>neration | C. acc<u>e</u>pt | D. m<u>e</u>morable", options: { A: "endangered", B: "generation", C: "accept", D: "memorable" }, answer: "A", exp: "👉 <strong class='text-white'>endangered</strong> chữ e đầu phát âm là <strong class='text-amber-300'>/ɪ/</strong>.<br>👉 Các từ còn lại phát âm là âm <strong class='text-amber-300'>/e/</strong>." },
+                { id: 10, label: "10", text: "A. <u>e</u>liminate | B. <u>e</u>xpedition | C. s<u>e</u>parate | D. pr<u>e</u>paration", options: { A: "eliminate", B: "expedition", C: "separate", D: "preparation" }, answer: "A", exp: "👉 <strong class='text-white'>eliminate</strong> chữ e đầu phát âm là <strong class='text-amber-300'>/ɪ/</strong>.<br>👉 Các từ còn lại nguyên âm e nhấn mạnh phát âm là <strong class='text-amber-300'>/e/</strong>." },
+                { id: 11, label: "11", text: "A. attr<u>a</u>ction | B. surf<u>a</u>ce | C. h<u>a</u>ndicraft | D. <u>a</u>rtisan", options: { A: "attraction", B: "surface", C: "handicraft", D: "artisan" }, answer: "B", exp: "👉 <strong class='text-white'>surface</strong> chữ a phát âm là <strong class='text-amber-300'>/ɪ/</strong> (/ˈsɜː.fɪs/).<br>👉 Các từ còn lại phát âm lần lượt là /ə/, /æ/, /ɑː/ (khác /ɪ/)." },
+                { id: 12, label: "12", text: "A. <u>a</u>rtisan | B. est<u>a</u>blish | C. attr<u>a</u>ction | D. h<u>a</u>ndicraft", options: { A: "artisan", B: "establish", C: "attraction", D: "handicraft" }, answer: "A", exp: "👉 <strong class='text-white'>artisan</strong> chữ a đầu tiên phát âm là <strong class='text-amber-300'>/ɑː/</strong>.<br>👉 Các từ còn lại phát âm là <strong class='text-amber-300'>/æ/</strong>." },
+                { id: 13, label: "13", text: "A. gr<u>a</u>duate | B. s<u>a</u>tellite | C. p<u>a</u>rachute | D. cl<u>i</u>mate", options: { A: "graduate", B: "satellite", C: "parachute", D: "climate" }, answer: "D", exp: "👉 <strong class='text-white'>climate</strong> chữ i (vị trí tương đương) phát âm là <strong class='text-amber-300'>/aɪ/</strong>.<br>👉 Các từ còn lại chữ a đầu phát âm là <strong class='text-amber-300'>/æ/</strong>." },
+                { id: 14, label: "14", text: "A. <u>e</u>nvironment | B. r<u>e</u>peat | C. <u>e</u>mbroider | D. tr<u>a</u>nsfer", options: { A: "environment", B: "repeat", C: "embroider", D: "transfer" }, answer: "D", exp: "👉 <strong class='text-white'>transfer</strong> nguyên âm a phát âm là <strong class='text-amber-300'>/æ/</strong> (hoặc /ɑː/).<br>👉 Các từ còn lại có nguyên âm e ở đầu phát âm là âm ngắn <strong class='text-amber-300'>/ɪ/</strong>." },
+                { id: 15, label: "15", text: "A. p<u>o</u>ttery | B. <u>o</u>pinion | C. c<u>o</u>mmunicate | D. behavi<u>o</u>r", options: { A: "pottery", B: "opinion", C: "communicate", D: "behavior" }, answer: "A", exp: "👉 <strong class='text-white'>pottery</strong> chữ o phát âm là âm ngắn <strong class='text-amber-300'>/ɒ/</strong>.<br>👉 Các từ còn lại phát âm là âm ơ ngắn <strong class='text-amber-300'>/ə/</strong>." },
+                { id: 16, label: "16", text: "A. gr<u>a</u>duate | B. m<u>a</u>gic | C. l<u>a</u>vender | D. f<u>a</u>therhood", options: { A: "graduate", B: "magic", C: "lavender", D: "fatherhood" }, answer: "D", exp: "👉 <strong class='text-white'>fatherhood</strong> chữ a phát âm là <strong class='text-amber-300'>/ɑː/</strong>.<br>👉 Các từ còn lại phát âm là âm bẹt <strong class='text-amber-300'>/æ/</strong>." }
+            ],
+            ex2: [
+                { id: 1, label: "1", text: "A. attraction | B. souvenir | C. particular | D. variety", options: { A: "attraction", B: "souvenir", C: "particular", D: "variety" }, answer: "B", exp: "👉 Từ <strong class='text-white'>souvenir</strong> nhấn trọng âm vào âm tiết thứ 3.<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 2, label: "2", text: "A. workshop | B. opinion | C. museum | D. embroider", options: { A: "workshop", B: "opinion", C: "museum", D: "embroider" }, answer: "A", exp: "👉 Từ <strong class='text-white'>workshop</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 3, label: "3", text: "A. control | B. lantern | C. carpet | D. basket", options: { A: "control", B: "lantern", C: "carpet", D: "basket" }, answer: "A", exp: "👉 Động từ <strong class='text-white'>control</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các danh từ còn lại nhấn âm tiết thứ 1." },
+                { id: 4, label: "4", text: "A. craftsman | B. attraction | C. museum | D. department", options: { A: "craftsman", B: "attraction", C: "museum", D: "department" }, answer: "A", exp: "👉 Từ <strong class='text-white'>craftsman</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các từ còn lại có đuôi tion/ment hoặc 3 âm tiết nhấn âm tiết thứ 2." },
+                { id: 5, label: "5", text: "A. embroider | B. lantern | C. impress | D. desire", options: { A: "embroider", B: "lantern", C: "impress", D: "desire" }, answer: "B", exp: "👉 Danh từ <strong class='text-white'>lantern</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các động từ còn lại nhấn âm tiết thứ 2." },
+                { id: 6, label: "6", text: "A. symbolize | B. museum | C. pottery | D. handicraft", options: { A: "symbolize", B: "museum", C: "pottery", D: "handicraft" }, answer: "B", exp: "👉 Từ <strong class='text-white'>museum</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 7, label: "7", text: "A. preservation | B. recognition | C. decision | D. exhibition", options: { A: "preservation", B: "recognition", C: "decision", D: "exhibition" }, answer: "C", exp: "👉 Từ <strong class='text-white'>decision</strong> có đuôi -sion, trọng âm rơi vào âm tiết liền trước (âm tiết thứ 2).<br>👉 Các từ còn lại rơi vào âm tiết thứ 3." },
+                { id: 8, label: "8", text: "A. family | B. typical | C. grandparents | D. embroider", options: { A: "family", B: "typical", C: "grandparents", D: "embroider" }, answer: "D", exp: "👉 Động từ <strong class='text-white'>embroider</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 9, label: "9", text: "A. pottery | B. sculpture | C. embroider | D. handkerchief", options: { A: "pottery", B: "sculpture", C: "embroider", D: "handkerchief" }, answer: "C", exp: "👉 Động từ <strong class='text-white'>embroider</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 10, label: "10", text: "A. fragrance | B. advice | C. suburb | D. garbage", options: { A: "fragrance", B: "advice", C: "suburb", D: "garbage" }, answer: "B", exp: "👉 Danh từ (nhưng có nguồn gốc động từ khuyên bảo) <strong class='text-white'>advice</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các danh từ còn lại nhấn âm tiết thứ 1." },
+                { id: 11, label: "11", text: "A. transfer | B. publish | C. accept | D. remind", options: { A: "transfer", B: "publish", C: "accept", D: "remind" }, answer: "B", exp: "👉 Động từ <strong class='text-white'>publish</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các động từ còn lại nhấn âm tiết thứ 2." },
+                { id: 12, label: "12", text: "A. handicraft | B. cultural | C. museum | D. sculpture", options: { A: "handicraft", B: "cultural", C: "museum", D: "sculpture" }, answer: "C", exp: "👉 Danh từ <strong class='text-white'>museum</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 13, label: "13", text: "A. opinion | B. embroider | C. department | D. drumhead", options: { A: "opinion", B: "embroider", C: "department", D: "drumhead" }, answer: "D", exp: "👉 Danh từ <strong class='text-white'>drumhead</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 14, label: "14", text: "A. delivery | B. original | C. facility | D. information", options: { A: "delivery", B: "original", C: "facility", D: "information" }, answer: "D", exp: "👉 Từ <strong class='text-white'>information</strong> kết thúc đuôi -tion nên nhấn trọng âm ngay trước nó (âm tiết thứ 3).<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 15, label: "15", text: "A. competition | B. generation | C. conical | D. authenticity", options: { A: "competition", B: "generation", C: "conical", D: "authenticity" }, answer: "C", exp: "👉 Từ <strong class='text-white'>conical</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các từ còn lại nhấn âm tiết thứ 3." },
+                { id: 16, label: "16", text: "A. surface | B. attraction | C. bamboo | D. technique", options: { A: "surface", B: "attraction", C: "bamboo", D: "technique" }, answer: "A", exp: "👉 Danh từ <strong class='text-white'>surface</strong> nhấn trọng âm vào âm tiết thứ 1.<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 17, label: "17", text: "A. workshop | B. authenticity | C. grandparent | D. village", options: { A: "workshop", B: "authenticity", C: "grandparent", D: "village" }, answer: "B", exp: "👉 Từ <strong class='text-white'>authenticity</strong> nhấn trọng âm vào âm tiết thứ 3.<br>👉 Các danh từ còn lại nhấn âm tiết thứ 1." },
+                { id: 18, label: "18", text: "A. workshop | B. remind | C. outskirts | D. village", options: { A: "workshop", B: "remind", C: "outskirts", D: "village" }, answer: "B", exp: "👉 Động từ <strong class='text-white'>remind</strong> nhấn trọng âm vào âm tiết thứ 2.<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 19, label: "19", text: "A. artisan | B. citadel | C. paradise | D. handicraft", options: { A: "artisan", B: "citadel", C: "paradise", D: "handicraft" }, answer: "A", exp: "👉 Từ <strong class='text-white'>artisan</strong> thường được nhấn trọng âm vào âm tiết thứ 3 (trong tiếng Anh Anh chuẩn).<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 20, label: "20", text: "A. occasion | B. attraction | C. firefighter | D. instruction", options: { A: "occasion", B: "attraction", C: "firefighter", D: "instruction" }, answer: "C", exp: "👉 Danh từ ghép <strong class='text-white'>firefighter</strong> nhấn trọng âm vào âm tiết đầu tiên (chữ 'fire').<br>👉 Các từ còn lại có đuôi -ion nhấn vào âm tiết thứ 2." }
+            ]
+        };
+
+        let currentActiveSection = 'ex1';
+        let studentAccumulatedScore = 0;
+        let loggedExamProgress = { ex1: {}, ex2: {} };
+
+        const correctOwlPhrases = ["Xuất sắc luôn con! 🎉", "Làm tốt lắm nè! 🌟", "Tuyệt vời, cố lên! 🔥", "Chuẩn không cần chỉnh! 💕"];
+        const wrongOwlPhrases = ["Gần đúng rồi, phân tích lại nào! 💪", "Chú ý trọng âm nha con! 🌱", "Không sao, thử lại câu tiếp nhé! ✨"];
+
+        function triggerMascotReaction(isCorrect) {
+            const owl = document.getElementById('owl-mascot');
+            const bubble = document.getElementById('owl-speech-bubble');
+            
+            owl.className = "owl-dancing text-5xl md:text-6xl pointer-events-auto cursor-pointer filter drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]";
+            
+            if (isCorrect) {
+                bubble.innerText = correctOwlPhrases[Math.floor(Math.random() * correctOwlPhrases.length)];
+            } else {
+                bubble.innerText = wrongOwlPhrases[Math.floor(Math.random() * wrongOwlPhrases.length)];
+            }
+
+            setTimeout(() => {
+                owl.className = "owl-idle text-5xl md:text-6xl pointer-events-auto cursor-pointer filter drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]";
+            }, 1400);
+        }
+
+        function pokeMascot() {
+            const bubble = document.getElementById('owl-speech-bubble');
+            bubble.innerText = "Wow, chăm chỉ quá nha! 🦉✨";
+        }
+
+        function changeSectionTab(sectionKey) {
+            currentActiveSection = sectionKey;
+            
+            const btn1 = document.getElementById('tab-ex1');
+            const btn2 = document.getElementById('tab-ex2');
+            const headerText = document.getElementById('exercise-main-title');
+            const headerIcon = document.getElementById('header-icon');
+
+            if (sectionKey === 'ex1') {
+                btn1.className = "py-3 text-xs md:text-sm font-medium text-center option-card active:scale-[0.97] bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)] border border-indigo-400/50";
+                btn2.className = "py-3 text-xs md:text-sm font-medium text-center option-card active:scale-[0.97] text-slate-300 hover:bg-white/10";
+                headerText.innerText = "Exercise 1: Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation.";
+                headerIcon.innerText = "🗣️";
+            } else {
+                btn2.className = "py-3 text-xs md:text-sm font-medium text-center option-card active:scale-[0.97] bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.4)] border border-indigo-400/50";
+                btn1.className = "py-3 text-xs md:text-sm font-medium text-center option-card active:scale-[0.97] text-slate-300 hover:bg-white/10";
+                headerText.innerText = "Exercise 2: Mark the letter A, B, C, or D to indicate the word that differs from the other three in the position of primary stress.";
+                headerIcon.innerText = "⚡";
+            }
+
+            renderQuizListFeed();
+        }
+
+        function renderQuizListFeed() {
+            const feedContainer = document.getElementById('quiz-feed-wrapper');
+            feedContainer.innerHTML = '';
+
+            const activeList = exerciseData[currentActiveSection];
+
+            activeList.forEach((questionObj, index) => {
+                const questionContainerCard = document.createElement('div');
+                questionContainerCard.className = "pb-8 border-b border-white/10 last:border-none";
+
+                const blockHeader = document.createElement('div');
+                blockHeader.className = "flex items-start gap-3 mb-5";
+                blockHeader.innerHTML = `
+                    <span class="font-poster bg-indigo-500 text-white shadow-md text-[11px] font-medium px-3 py-1.5 rounded-lg shrink-0 mt-0.5 tracking-wider uppercase">CÂU ${questionObj.label}</span>
+                    <span class="font-bubble font-medium text-slate-100 text-sm md:text-lg leading-relaxed">${questionObj.text}</span>
+                `;
+                questionContainerCard.appendChild(blockHeader);
+
+                const buttonsGrid = document.createElement('div');
+                buttonsGrid.className = "font-poster grid grid-cols-1 md:grid-cols-2 gap-3.5 text-sm md:text-base";
+
+                const historicalState = loggedExamProgress[currentActiveSection][index];
+
+                Object.entries(questionObj.options).forEach(([key, value]) => {
+                    const optionBtn = document.createElement('button');
+                    
+                    optionBtn.className = "option-card flex items-center justify-between p-4 bg-slate-800/50 border border-slate-600 text-left font-normal text-slate-300 hover:bg-slate-700/80 hover:border-indigo-400 active:scale-[0.98] cursor-pointer shadow-sm";
+                    let statusRadioNode = `<span class="w-5 h-5 rounded-full border-2 border-slate-500 bg-slate-900/50 flex items-center justify-center shrink-0"></span>`;
+
+                    if (historicalState) {
+                        optionBtn.disabled = true;
+                        optionBtn.style.transform = 'none';
+                        if (key === questionObj.answer) {
+                            optionBtn.className = "option-card flex items-center justify-between p-4 bg-emerald-900/60 border border-emerald-500/50 text-left font-medium text-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.2)]";
+                            statusRadioNode = `<span class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[12px] font-bold shrink-0">✓</span>`;
+                        } else if (historicalState.selected === key) {
+                            optionBtn.className = "option-card flex items-center justify-between p-4 bg-rose-900/60 border border-rose-500/50 text-left font-medium text-rose-100 shadow-[0_0_15px_rgba(244,63,94,0.2)]";
+                            statusRadioNode = `<span class="w-5 h-5 rounded-full bg-rose-500 flex items-center justify-center text-white text-[10px] font-bold shrink-0">✕</span>`;
+                        } else {
+                            optionBtn.className = "option-card flex items-center justify-between p-4 bg-slate-800/20 border border-slate-700/50 opacity-50 text-left font-normal text-slate-500 shadow-none pointer-events-none";
+                            statusRadioNode = `<span class="w-5 h-5 rounded-full border-2 border-slate-700 bg-transparent shrink-0"></span>`;
+                        }
+                    } else {
+                        optionBtn.onclick = (e) => processStudentSelection(index, key, e);
+                    }
+
+                    optionBtn.innerHTML = `<span><strong class="${historicalState && (key === questionObj.answer || historicalState.selected === key) ? 'text-white' : 'text-indigo-400'} font-medium mr-2">${key}.</strong> ${value}</span> ${statusRadioNode}`;
+                    buttonsGrid.appendChild(optionBtn);
+                });
+
+                questionContainerCard.appendChild(buttonsGrid);
+
+                if (historicalState) {
+                    const structuralExpBox = document.createElement('div');
+                    structuralExpBox.className = "mt-4 p-5 bg-indigo-950/40 border border-indigo-500/20 rounded-[24px] relative overflow-hidden text-slate-300 font-sans shadow-inner backdrop-blur-md";
+                    structuralExpBox.innerHTML = `
+                        <div class="font-poster flex items-center gap-2 font-medium text-indigo-300 uppercase text-xs mb-2 tracking-wider">
+                            <span class="text-base">💡</span> GIẢI THÍCH TỪ CÔ LÊ HẰNG:
+                        </div>
+                        <div class="text-slate-300 text-sm leading-relaxed space-y-1.5 pl-3 border-l-2 border-indigo-500 font-normal">
+                            ${questionObj.exp}
+                        </div>
+                    `;
+                    questionContainerCard.appendChild(structuralExpBox);
+                }
+
+                feedContainer.appendChild(questionContainerCard);
+            });
+        }
+
+        function processStudentSelection(index, optionChar, event) {
+            if (loggedExamProgress[currentActiveSection][index]) return;
+
+            const referenceQuestion = exerciseData[currentActiveSection][index];
+            const isCorrect = (optionChar === referenceQuestion.answer);
+
+            if (isCorrect) {
+                studentAccumulatedScore += 10;
+                if (event) {
+                    spawnConfetti(event.clientX, event.clientY);
+                }
+            }
+
+            loggedExamProgress[currentActiveSection][index] = { selected: optionChar, isCorrect: isCorrect };
+            document.getElementById('footer-live-score').innerText = studentAccumulatedScore;
+            
+            playToneFeedback(isCorrect);
+            triggerMascotReaction(isCorrect);
+            renderQuizListFeed();
+        }
+
+        function alertFinishMessage() {
+            alert(`🎉 Chúc mừng con yêu đã hoàn thành xong bài tập!\n🏆 Tổng số điểm đạt được: ${studentAccumulatedScore} điểm. Nhớ chụp lại màn hình gửi vào nhóm lớp cho cô nhé!`);
+        }
+
+        window.onload = () => {
+            renderQuizListFeed();
+        };
+    </script>
+</body>
+</html>
